@@ -46,7 +46,7 @@ def run_inference(img_bytes) -> bytes:
     
 @app.local_entrypoint()
 def main():
-    images = itertools.chain(Path(directory).glob('*.png'), Path(directory).glob('*.jpeg'))
+    images = itertools.chain(Path(directory).glob('*.png'), Path(directory).glob('*.jpeg'), Path(directory).glob('*.jpg'))
     for path in images:
         with open(str(path), "rb") as f:
             img_bytes = f.read()
