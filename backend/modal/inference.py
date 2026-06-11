@@ -2,7 +2,7 @@ from pathlib import Path
 import modal
 import subprocess
 import itertools
-
+import shutil
 
 directory = "test/input_images"
 
@@ -31,6 +31,12 @@ volume = modal.Volume.from_name("see-through-models", create_if_missing=True)
 
 @app.function(gpu="A100", image=image, volumes={"/cache": volume}, secrets=[modal.Secret.from_name("huggingface")])
 def run_inference(img_bytes) -> bytes:
+    
+    output_dir = Path("/root/workspace/layerdiff_output")
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
 
     temp_input = Path("/tmp/input.png")
     temp_input.write_bytes(img_bytes)
