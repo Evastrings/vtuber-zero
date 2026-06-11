@@ -34,7 +34,12 @@ def run_inference(img_bytes) -> bytes:
 
     temp_input = Path("/tmp/input.png")
     temp_input.write_bytes(img_bytes)
-    subprocess.run(["python", "/see-through/inference/scripts/inference_psd.py", "--srcp", str(temp_input), "--save_to_psd"])
+    subprocess.run([
+        "python", "/see-through/inference/scripts/inference_psd.py",
+        "--srcp", str(temp_input),
+        "--save_to_psd",
+        "--tblr_split"
+        ])
     psd_file = Path("/root/workspace/layerdiff_output/input.psd")
     with open(psd_file, "rb") as f:
          return f.read()
