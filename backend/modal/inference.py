@@ -40,7 +40,12 @@ def run_inference(img_bytes) -> bytes:
         "--save_to_psd",
         "--tblr_split"
         ])
-    psd_file = Path("/root/workspace/layerdiff_output/input.psd")
+    psd_files = list(Path("/root/workspace/layerdiff_output").glob("*.psd"))
+    print(f"PSD files found: {psd_files}")
+    if not psd_files:
+        raise FileNotFoundError("No PSD file found in output directory")
+    
+    psd_file = psd_files[0]
     with open(psd_file, "rb") as f:
          return f.read()
     
