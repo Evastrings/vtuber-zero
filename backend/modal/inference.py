@@ -40,18 +40,53 @@ def run_inference(img_bytes) -> bytes:
 
     temp_input = Path("/tmp/input.png")
     temp_input.write_bytes(img_bytes)
+
+    # see-through Inference
     subprocess.run([
         "python", "/see-through/inference/scripts/inference_psd.py",
         "--srcp", str(temp_input),
         "--save_to_psd",
         "--tblr_split"
         ])
+    
+    #Find generated PSD file
     psd_files = list(Path("/root/workspace/layerdiff_output").glob("*.psd"))
     print(f"PSD files found: {psd_files}")
     if not psd_files:
         raise FileNotFoundError("No PSD file found in output directory")
     
     psd_file = psd_files[0]
+
+    # Heuristic Post-processing
+    print('Running Heuristic part segmentation (depth + left/right splits)...')
+
+    tags = ["leg", "arm", "hair", "handwear", "bottomwear", "topwear", "accessory"]
+
+    # Depth split first
+    subprocess.run([
+        "python", "/see-through/inference/scripts/heuristic_partseg.py", "seg_wdepth",
+        "--srcp", str(psd_file),
+        "--target_tags", ",".join(tags)
+    ])
+
+    # Left-right split on the depth-split result
+    wdepth_psd = output_dir / f"{psd_file.stem}_wdepth.psd"
+    if wdepth_psd.exists():
+        subprocess.run([
+            "python", "/see-through/inference/scripts/heuristic_partseg.py", "seg_wlr",
+            "--srcp", str(wdepth_psd),
+            "--target_tags", ",".join(tags)
+        ])
+
+        # Use final split PSD as output
+        final_psd = output_dir / f"{wdepth_psd.stem}_wlr.psd"
+        if final_psd.exists():
+            psd_file = final_psd
+        else:
+            psd_file = wdepth_psd
+
+
+    # Returns the final PSD bytes
     with open(psd_file, "rb") as f:
          return f.read()
     
