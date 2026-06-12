@@ -29,7 +29,14 @@ image = (
 volume = modal.Volume.from_name("see-through-models", create_if_missing=True)
 
 
-@app.function(gpu="A100", image=image, volumes={"/cache": volume}, secrets=[modal.Secret.from_name("huggingface")])
+@app.function(gpu="A100", image=image, volumes={"/cache": volume}, secrets=[modal.Secret.from_name("huggingface")], timeout=1800)
+# @app.function(
+#     gpu="A100",
+#     image=image,
+#     volumes={"/cache": volume},
+#     secrets=[modal.Secret.from_name("huggingface")],
+#     timeout=900
+# )
 def run_inference(img_bytes) -> bytes:
     
     output_dir = Path("/root/workspace/layerdiff_output")
@@ -60,7 +67,7 @@ def run_inference(img_bytes) -> bytes:
     # Heuristic Post-processing
     print('Running Heuristic part segmentation (depth + left/right splits)...')
 
-    tags = ["leg", "arm", "hair", "handwear", "bottomwear", "topwear", "accessory"]
+    tags = ["legwear", "footwear", "front hair", "back hair", "topwear", "bottomwear", "headwear"]
 
     # Depth split first
     subprocess.run([
