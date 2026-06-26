@@ -20,19 +20,10 @@ image = (
         remote_path="/see-through",
         copy=True
     )
-    # .run_commands(
-    #     "apt-get update && apt-get install -y git libgl1 libglib2.0-0 libsm6 libxrender1 libxext6",
-    #     "cd /see-through && pip install -r requirements.txt",
-    #     "cd /see-through && python -c 'from inference.scripts.inference_psd import apply_layerdiff, apply_marigold; print(\"Models preloaded\")'"
-    # )
     .run_commands(
         "apt-get update && apt-get install -y git libgl1 libglib2.0-0 libsm6 libxrender1 libxext6",
         "cd /see-through && pip install -r requirements.txt",
         "rm -rf /cache/* || true"
-        # Pre-download models once
-        # "cd /see-through && HF_HUB_CACHE=/cache/huggingface python -c "
-        # "'import os; os.makedirs(\"/cache/huggingface\", exist_ok=True); "
-        # "from inference.scripts.inference_psd import apply_layerdiff, apply_marigold; print(\"Models cached\")'"
     )
 )
 
@@ -41,13 +32,6 @@ volume = modal.Volume.from_name("see-through-models", create_if_missing=True)
 
 
 @app.function(gpu="A100", image=image, volumes={"/models": volume}, secrets=[modal.Secret.from_name("huggingface")], timeout=1800, min_containers=1)
-# @app.function(
-#     gpu="A100",
-#     image=image,
-#     volumes={"/cache": volume},
-#     secrets=[modal.Secret.from_name("huggingface")],
-#     timeout=900
-# )
 def run_inference(img_bytes) -> bytes:
 
     # Let's model loads from cache
