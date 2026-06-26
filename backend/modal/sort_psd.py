@@ -61,7 +61,5 @@ def reorder_psd(input_path: str, output_path: str = None):
     print(psd_r._layers)
     psd_r.save(output_path)
     print(f"psd reordered and saved to {output_path}")
-    return output_path/"output_reordered.psd"
+    return output_path
     
-
-reorder_psd("test/see_through_output/bluebg6")
