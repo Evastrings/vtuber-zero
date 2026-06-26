@@ -1,8 +1,8 @@
-from psd_tools import PSDImage
-psd = PSDImage.open("test/see_through_output/bluebg6/output.psd")
-for index, layer in enumerate(psd):
-    print(f"Index {index}: {layer.name} ({type(layer)})")
-# for layer in psd:
+# from psd_tools import PSDImage
+# psd = PSDImage.open("test/see_through_output/bluebg6/output.psd")
+# for index, layer in enumerate(psd):
+#     print(f"Index {index}: {layer.name} ({type(layer)})")
+# # for layer in psd:
 #     print(layer.name, type(layer))
 #     print(layer.index())
 
@@ -31,3 +31,10 @@ for index, layer in enumerate(psd):
 #     print(result[0]["generated_text"][-1]["content"])
 
 #     return result
+
+psd = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+for letter in psd:
+    # print(letter)
+    psd.remove(psd[0])
+    # print(psd)
