@@ -137,14 +137,14 @@ def run_inference(img_bytes) -> bytes:
     print('Running Heuristic part segmentation (depth + left/right splits)...')
     root = Path("/see-through")
 
-    leg_tags = ["legwear", "footwear", "bottomwear"]
-    print("Depth split on legs...")
-    # Depth leg split first
-    subprocess.run([
-        "python", "/see-through/inference/scripts/heuristic_partseg.py", "seg_wdepth",
-        "--srcp", str(psd_file),
-        "--target_tags", ",".join(leg_tags)
-    ], check=True, cwd=str(root))
+    # leg_tags = ["legwear", "footwear", "bottomwear"]
+    # print("Depth split on legs...")
+    # # Depth leg split first
+    # subprocess.run([
+    #     "python", "/see-through/inference/scripts/heuristic_partseg.py", "seg_wdepth",
+    #     "--srcp", str(psd_file),
+    #     "--target_tags", ",".join(leg_tags)
+    # ], check=True, cwd=str(root))
 
     #Full depth split
     tags = ["legwear", "footwear", "front hair", "back hair", "topwear", "bottomwear", "headwear", "handwear"]
